@@ -5,11 +5,14 @@ import Register from "./pages/register/Register";
 import Settings from "./pages/settings/Settings";
 import Single from "./pages/single/Single";
 import Write from "./pages/write/Write";
+import ConfirmDelete from "./pages/confirmDelete/ConfirmDelete";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useContext } from "react";
+import { Context } from "./context/Context";
 
 function App() {
 
-    const user = true;
+    const {user} = useContext(Context);
 
     return (
         <div className="App">
@@ -22,6 +25,7 @@ function App() {
               <Route path="/write" element={user ? <Write/> : <Home/>} />
               <Route path="/settings" element={user ? <Settings/> : <Home/>} />
               <Route path="/post/:postID" element={<Single/>} />
+              <Route path="/confirmation" element={user ? <ConfirmDelete/> : <Home/>} />
             </Routes>
           </Router>
         </div>

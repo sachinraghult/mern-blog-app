@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const authRoute = require("./routes/auth");
@@ -6,7 +7,7 @@ const userRoute = require("./routes/users");
 const postRoute = require("./routes/posts");
 const categoryRoute = require("./routes/categories");
 const multer = require("multer");
-
+const path = require("path")
 
 
 const app = express();
@@ -14,7 +15,8 @@ const app = express();
 dotenv.config();
 
 app.use(express.json());
-
+app.use(cors({ origin: true }));
+app.use("/images", express.static(path.join(__dirname, "/images")));
 
 
 // connecting to mongoDB
@@ -25,7 +27,6 @@ mongoose
     })
     .then(console.log("Connected to MongoDB"))
     .catch((err) => console.log(err));
-
 
 
 // upload files using multer

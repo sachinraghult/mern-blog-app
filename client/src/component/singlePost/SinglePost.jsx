@@ -1,58 +1,173 @@
-import React from 'react';
-import './SinglePost.css'
+import React, { useContext, useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import './SinglePost.css';
+import axios from 'axios';
+import { Context } from '../../context/Context';
 
 export default function Single() {
+
+    const folder = "http://localhost:5000/images/";
+
+    const location = useLocation();
+    const path = location.pathname.split("/")[2];
+
+    const {user} = useContext(Context);
+
+    const [post, setPost] = useState({});
+    const [deleteError, setDeleteError] = useState(false);
+    
+    const [title, setTitle] = useState("");
+    const [desc, setDesc] = useState("");
+    const [file, setFile] = useState(null);
+    const [mode, setMode] = useState(false);
+
+    const [uploadError, setUploadError] = useState(false);
+    const [error, setError] = useState(false);
+
+    useEffect(() => {
+        const getPost = async () => {
+            const res = await axios.get("/posts/" + path);
+            setPost(res.data);
+            setTitle(res.data.title);
+            setDesc(res.data.desc);
+        };
+        getPost();
+    }, [path])
+
+    const handleDelete = async () => {
+        try {
+            await axios.delete("/posts/" + path, {
+                data: {username: user.username}
+            });
+            window.location.replace("/");
+        } catch (err) {
+            setDeleteError(true);
+        }
+    }
+
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+        const newPost = {
+            username: user.username,
+            title,
+            desc,
+        }
+        if(file) {
+            const data = new FormData();
+            const filename = Date.now() + file.name;
+            data.append("name", filename);
+            data.append("file", file);
+            newPost.photo = filename;
+
+            try {
+                await axios.post("/upload", data);
+            } catch (err) {
+                setUploadError(true);
+            }
+        }
+        try {
+            await axios.put("/posts/" + post._id, newPost);
+            setMode(false);
+            window.location.replace("/post/" + post._id);
+        } catch (err) {
+            setError(true);
+        }
+    };
+
     return (
         <div className='singlePost'>
             <div className="singlePostWrapper">
-                <img
-                    className="singlePostImg"
-                    src="https://images.pexels.com/photos/6685428/pexels-photo-6685428.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
-                    alt=""
-                />
-                <h1 className="singlePostTitle">
-                    Lorem ipsum dolor
-                    <div className="singlePostEdit">
-                        <i className="singlePostIcon far fa-edit"></i>
-                        <i className="singlePostIcon far fa-trash-alt"></i>
-                    </div>
-                </h1>
-                <div className="singlePostInfo">
-                    <span className='singlePostAuthor'>
-                        Author : <b>Sachin Raghul</b>
-                    </span>
-                    <span className='singlePostDate'>1 hour ago</span>
-                </div>
-                <p className="singlePostDesc">
-                    Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iste error
-                    quibusdam ipsa quis quidem doloribus eos, dolore ea iusto impedit!
-                    Voluptatum necessitatibus eum beatae, adipisci voluptas a odit modi
-                    eos! Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iste
-                    error quibusdam ipsa quis quidem doloribus eos, dolore ea iusto
-                    impedit! Voluptatum necessitatibus eum beatae, adipisci voluptas a
-                    odit modi eos! Lorem, ipsum dolor sit amet consectetur adipisicing
-                    elit. Iste error quibusdam ipsa quis quidem doloribus eos, dolore ea
-                    iusto impedit! Voluptatum necessitatibus eum beatae, adipisci voluptas
-                    a odit modi eos! Lorem, ipsum dolor sit amet consectetur adipisicing
-                    elit. Iste error quibusdam ipsa quis quidem doloribus eos, dolore ea
-                    iusto impedit! Voluptatum necessitatibus eum beatae, adipisci voluptas
-                    a odit modi eos! Lorem, ipsum dolor sit amet consectetur adipisicing
-                    elit. Iste error quibusdam ipsa quis quidem doloribus eos, dolore ea
-                    iusto impedit! Voluptatum necessitatibus eum beatae, adipisci voluptas
-                    a odit modi eos!
-                    <br />
-                    <br />
-                    Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iste error
-                    quibusdam ipsa quis quidem doloribus eos, dolore ea iusto impedit!
-                    Voluptatum necessitatibus eum beatae, adipisci voluptas a odit modi
-                    eos! Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iste
-                    error quibusdam ipsa quis quidem doloribus eos, dolore ea iusto
-                    impedit! Voluptatum necessitatibus eum beatae, adipisci voluptas a
-                    odit modi eos! Lorem, ipsum dolor sit amet consectetur adipisicing
-                    elit. Iste error quibusdam ipsa quis quidem doloribus eos, dolore ea
-                    iusto impedit! Voluptatum necessitatibus eum beatae, adipisci voluptas
-                    a odit modi eos! Lorem, ipsum dolor sit amet consectetur.
-                </p>
+                {!file ? 
+                (
+                    post.photo ? (
+                        <img
+                            className="singlePostImg"
+                            src={folder + post.photo}
+                            alt=""
+                        />
+                    ) : (
+                        <img
+                            className="singlePostImg"
+                            src="https://images.squarespace-cdn.com/content/v1/5aa2b4985b409b6f2d85fc73/1541861898559-NWCVHNCYX1QDPQ97OVLS/trail.jpg?format=1500w"
+                            alt=""
+                        />
+                    )
+                ) 
+                : 
+                (
+                    <img
+                        className="singlePostImg"
+                        src={URL.createObjectURL(file)}
+                        alt=""
+                    />
+                )
+                }
+                {
+                    !mode ? 
+                    (
+                        <>
+                        <h1 className="singlePostTitle">
+                            {post.title}
+                            {post.username === user?.username && 
+                                <div className="singlePostEdit">
+                                    <i className="singlePostIcon far fa-edit" onClick={()=>setMode(true)} ></i>
+                                    <i className="singlePostIcon far fa-trash-alt" onClick={handleDelete} ></i>
+                                </div>
+                            }
+                            
+                        </h1>
+                        <div className="singlePostInfo">
+                            <Link to={`/?user=${post.username}`} className='link'>
+                                <span className='singlePostAuthor'>
+                                    Author : <b>{post.username}</b>
+                                </span>
+                            </Link>
+                            <span className='singlePostDate'>{new Date(post.createdAt).toDateString()}</span>
+                        </div>
+                        <p className="singlePostDesc">
+                            {deleteError && <span className='deleteError'>Invalid post!</span>}
+                            {post.desc}
+                        </p>
+                        </>
+                    )
+                    :
+                    (
+                        <form className='writeForm' onSubmit={handleUpdate}>
+                            {uploadError && <span className='uploadError'>Upload failed!</span>}
+                            {error && <span className='postError'>Invalid post!</span>}
+                            <div className="writeFormGroup">
+                                <label htmlFor='fileInput'>
+                                    <i class="writeIcon fas fa-plus"></i>
+                                </label>
+                                <input 
+                                    type='file' 
+                                    id='fileInput' 
+                                    style={{display: "none"}} 
+                                    onChange={(e) => setFile(e.target.files[0])} 
+                                />
+                                <input 
+                                    type='text' 
+                                    className='writeInput' 
+                                    autoFocus
+                                    placeholder='Title' 
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)} 
+                                />
+                            </div>
+                            <div className="writeFormGroup">
+                                <textarea 
+                                    placeholder='Tell your story...' 
+                                    type='text' 
+                                    className='writeInput writeText' 
+                                    value={desc}
+                                    onChange={(e) => setDesc(e.target.value)} >
+                                </textarea>
+                            </div>
+                            <button className="writeSubmit" type='submit'>Update</button>
+                        </form>
+                    )
+                }
+                
             </div>
         </div>
     );

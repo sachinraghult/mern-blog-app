@@ -10,7 +10,7 @@ export default function Header() {
             </div>
             <img
                 className="headerImg"
-                src="https://images.pexels.com/photos/1167355/pexels-photo-1167355.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+                src="https://assets.planday.com/wp-content/uploads/2021/09/08095248/blog-background-image-update-on-brexit-v2.png"
                 alt=""
             />
         </div>

@@ -1,18 +1,27 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { Context } from '../../context/Context';
 import './Topbar.css'
 
 export default function Topbar() {
 
-    const user = true;
+    const {user, dispatch} = useContext(Context);
+
+    const folder = "http://localhost:5000/images/";
+
+    const handleLogout = () => {
+        dispatch({
+            type:"LOGOUT",
+        });
+    };
 
     return (
         <div className='top'>
             <div className='topLeft'>
-                <i className="topIcon fab fa-facebook-square"></i>
-                <i className="topIcon fab fa-twitter-square"></i>
-                <i className="topIcon fab fa-instagram-square"></i>
-                <i className="topIcon fab fa-pinterest-square"></i>
+            <a href="https://www.facebook.com/sachinraghul.thirumeni"><i className="topIcon fab fa-facebook-square"></i></a>
+            <a href="https://twitter.com/sachin_raghul"><i className="topIcon fab fa-twitter-square"></i></a>
+            <a href="https://www.instagram.com/sach1n_t20/"><i className="topIcon fab fa-instagram-square"></i></a>
+            <a href="https://www.linkedin.com/in/sachinraghult"><i className="topIcon fab fa-linkedin"></i></a>
             </div>
             <div className='topCenter'>
                 <ul className='topList'>
@@ -28,7 +37,7 @@ export default function Topbar() {
                     <li className='topListItem'>
                         <Link to="/write" className='link'>WRITE</Link>
                     </li>
-                    <li className='topListItem'>
+                    <li className='topListItem' onClick={handleLogout}>
                             {user && "LOGOUT"}
                     </li>
                 </ul>
@@ -37,11 +46,22 @@ export default function Topbar() {
             {
                 user ? (
                     <Link className="link" to="/settings">
-                        <img 
-                            className='topImg' 
-                            src='https://upload.wikimedia.org/wikipedia/commons/5/5f/Alberto_conversi_profile_pic.jpg' 
-                            alt='' 
-                        />
+                        {
+                            (user.profilePic === "") ? (
+                                <img 
+                                    className='topImg' 
+                                    src='https://res.cloudinary.com/bitcharge/image/upload/v1535940305/panda-avatar.png' 
+                                    alt='' 
+                                />
+                            ) : (
+                                <img 
+                                    className='topImg' 
+                                    src={folder + user.profilePic}
+                                    alt='' 
+                                />
+                            )
+                        }
+                        
                     </Link>
                 ) : (
                     <ul className='topList'>

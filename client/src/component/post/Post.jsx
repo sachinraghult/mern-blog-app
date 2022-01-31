@@ -2,48 +2,46 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './Post.css'
 
-export default function Post() {
+export default function Post({post}) {
+
+    const folder = "http://localhost:5000/images/";
+
     return (
         <div className='post'>
-            <img 
-                className='postImg'
-                src='https://images.pexels.com/photos/6685428/pexels-photo-6685428.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500'
-                alt=''
-            />
+            {post.photo ? (
+                <img 
+                    className='postImg'
+                    src={folder + post.photo}
+                    alt=''
+                />
+            ) : (
+                <img 
+                    className='postImg'
+                    src='https://images.squarespace-cdn.com/content/v1/5aa2b4985b409b6f2d85fc73/1541861898559-NWCVHNCYX1QDPQ97OVLS/trail.jpg?format=1500w'
+                    alt=''
+                />
+            )}
+            
             <div className="postInfo">
                 <div className="postCats">
-                    <span className="postCat">Music</span>
-                    <span className="postCat">Life</span>
+                {post.categories.length ? (
+                    post.categories.map((c) => (
+                        <span className="postCat">{c}</span>
+                ))
+                ) : (
+                    <span className="postCat">General</span>
+                )}  
                 </div>
-                <Link to="/post/123" className='link'>
+                <Link to={`/post/${post._id}`} className='link'>
                     <span className="postTitle">
-                        Lorem ipsum dolar sit amet
+                        {post.title}
                     </span>
                 </Link>
                 <hr/>
-                <span className="postDate">1 hour ago</span>
+                <span className="postDate">{new Date(post.createdAt).toDateString()}</span>
             </div>
             <p className="postDesc">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda
-                officia architecto deserunt deleniti? Labore ipsum aspernatur magnam
-                fugiat, reprehenderit praesentium blanditiis quos cupiditate ratione
-                atque, exercitationem quibusdam, reiciendis odio laboriosam?
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda
-                officia architecto deserunt deleniti? Labore ipsum aspernatur magnam
-                fugiat, reprehenderit praesentium blanditiis quos cupiditate ratione
-                atque, exercitationem quibusdam, reiciendis odio laboriosam?
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda
-                officia architecto deserunt deleniti? Labore ipsum aspernatur magnam
-                fugiat, reprehenderit praesentium blanditiis quos cupiditate ratione
-                atque, exercitationem quibusdam, reiciendis odio laboriosam?
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda
-                officia architecto deserunt deleniti? Labore ipsum aspernatur magnam
-                fugiat, reprehenderit praesentium blanditiis quos cupiditate ratione
-                atque, exercitationem quibusdam, reiciendis odio laboriosam?
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda
-                officia architecto deserunt deleniti? Labore ipsum aspernatur magnam
-                fugiat, reprehenderit praesentium blanditiis quos cupiditate ratione
-                atque, exercitationem quibusdam, reiciendis odio laboriosam?
+                {post.desc}
             </p>
         </div>
     );
