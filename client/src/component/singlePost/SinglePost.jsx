@@ -33,10 +33,12 @@ export default function Single() {
         };
         getPost();
     }, [path])
-
+    console.log(user.accessToken);
     const handleDelete = async () => {
         try {
-            await axios.delete("/posts/" + path, {
+            await axios.delete("/posts/" + path, 
+            {
+                headers: {authorization: "Bearer " + user.accessToken},
                 data: {username: user.username}
             });
             window.location.replace("/");
@@ -66,7 +68,9 @@ export default function Single() {
             }
         }
         try {
-            await axios.put("/posts/" + post._id, newPost);
+            await axios.put("/posts/" + post._id, newPost, {
+                headers: {authorization: "Bearer " + user.accessToken}}
+            );
             setMode(false);
             window.location.replace("/post/" + post._id);
         } catch (err) {

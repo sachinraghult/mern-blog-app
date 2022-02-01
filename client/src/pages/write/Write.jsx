@@ -33,7 +33,9 @@ export default function Write() {
             }
         }
         try {
-            const res = await axios.post("/posts", newPost);
+            const res = await axios.post("/posts", newPost, {
+                headers: {authorization: "Bearer " + user.accessToken}
+            });
             window.location.replace("/post/" + res.data._id);
         } catch (err) {
             setError(true);

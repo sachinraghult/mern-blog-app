@@ -7,10 +7,11 @@ import './ConfirmDelete.css'
 export default function ConfirmDelete() {
 
     const {user, dispatch} = useContext(Context);
-
+    console.log("User id ", user.accessToken);
     const handleDelete = async () => {
         try {
             await axios.delete("/users/" + user._id, {
+                headers: {authorization: "Bearer " + user.accessToken},
                 data: {userId: user._id}
             });
             dispatch({

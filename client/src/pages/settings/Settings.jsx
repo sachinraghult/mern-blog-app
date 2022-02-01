@@ -8,8 +8,8 @@ import axios from "axios"
 export default function Settings() {
 
     const {user, dispatch} = useContext(Context);
+    console.log("This is user ", user);
 
-    const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [file, setFile] = useState(null);
     const [password, setPassword] = useState(false);
@@ -24,7 +24,7 @@ export default function Settings() {
         });
         const updatedUser = {
             userId: user._id,
-            username,
+            user: user.username,
             email,
             password,
         }
@@ -42,7 +42,9 @@ export default function Settings() {
             }
         }
         try {
-            const res = await axios.put("/users/" + user._id, updatedUser);
+            const res = await axios.put("/users/" + user._id, updatedUser, {
+                headers: {authorization: "Bearer " + user.accessToken}
+            });
             setSuccess(true);
             dispatch({ 
                 type: "UPDATE_SUCCESS", 
@@ -116,7 +118,7 @@ export default function Settings() {
                     <input 
                         type="text"
                         value={user.username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        readonly="readonly"
                         required
                     />
 
