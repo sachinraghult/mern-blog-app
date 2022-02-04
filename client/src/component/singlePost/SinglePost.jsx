@@ -33,7 +33,7 @@ export default function Single() {
         };
         getPost();
     }, [path])
-    console.log(user.accessToken);
+    
     const handleDelete = async () => {
         try {
             await axios.delete("/posts/" + path, 

@@ -64,3 +64,11 @@
     color: white;
     border-radius: 10px;
 }
+
+.loginError {
+    color: red;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    font-style: italic;
+}

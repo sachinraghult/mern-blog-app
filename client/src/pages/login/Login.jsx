@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Context } from '../../context/Context';
 import './Login.css'
@@ -9,6 +9,7 @@ export default function Login() {
     const userRef = useRef();
     const passwordRef = useRef();
     const { dispatch, isFetching } = useContext(Context);
+    const [error, setError] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -26,6 +27,7 @@ export default function Login() {
                 payload: {...res.data, accessToken: res.headers.authorization},
             });
         } catch(err) {
+            setError(true);
             dispatch({
                 type:"LOGIN_FAILURE",
             });
@@ -55,6 +57,7 @@ export default function Login() {
                 <button className="loginRegisterButton">
                     <Link to="/register" className='link'>Register</Link>
                 </button>
+                {error && <span className='loginError'>Invalid credentials!</span>}
         </div>
     );
 }

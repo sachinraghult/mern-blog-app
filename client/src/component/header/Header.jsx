@@ -5,7 +5,7 @@ export default function Header() {
     return (
         <div className='header'>
             <div className='headerTitles'>
-                <span className='headerTitleSmall'>React & Node</span>
+                <span className='headerTitleSmall'>Sachin's</span>
                 <span className='headerTitleLarge'>Blog</span>
             </div>
             <img
