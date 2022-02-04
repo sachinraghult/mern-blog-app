@@ -7,7 +7,7 @@ export default function Topbar() {
 
     const {user, dispatch} = useContext(Context);
 
-    const folder = "http://localhost:5000/images/";
+    const folder =  `https://lh3.googleusercontent.com/d/`;
 
     const handleLogout = () => {
         dispatch({
@@ -57,6 +57,7 @@ export default function Topbar() {
                                 <img 
                                     className='topImg' 
                                     src={folder + user.profilePic}
+                                    referrerPolicy="no-referrer"
                                     alt='' 
                                 />
                             )

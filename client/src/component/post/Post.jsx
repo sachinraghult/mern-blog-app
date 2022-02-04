@@ -4,7 +4,7 @@ import './Post.css'
 
 export default function Post({post}) {
 
-    const folder = "http://localhost:5000/images/";
+    const folder =  `https://lh3.googleusercontent.com/d/`;
 
     return (
         <div className='post'>
@@ -12,6 +12,7 @@ export default function Post({post}) {
                 <img 
                     className='postImg'
                     src={folder + post.photo}
+                    referrerPolicy="no-referrer"
                     alt=''
                 />
             ) : (

@@ -88,6 +88,10 @@
     align-items: center;
 }
 
+.writeSubmit:disabled {
+    cursor: not-allowed;
+}
+
 .writeSubmit:hover {
     opacity: 0.8;
 }

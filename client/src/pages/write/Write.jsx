@@ -11,9 +11,11 @@ export default function Write() {
     const {user} = useContext(Context);
     const [uploadError, setUploadError] = useState(false);
     const [error, setError] = useState(false);
+    const [disable, setDisable] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setDisable(true);
         const newPost = {
             username: user.username,
             title,
@@ -24,10 +26,10 @@ export default function Write() {
             const filename = Date.now() + file.name;
             data.append("name", filename);
             data.append("file", file);
-            newPost.photo = filename;
 
             try {
-                await axios.post("/upload", data);
+                await axios.post("/upload", data, {headers: {authorization: "Bearer " + user.accessToken}})
+                .then((res) => (newPost.photo = res.data.fileId));
             } catch (err) {
                 setUploadError(true);
             }
@@ -40,6 +42,7 @@ export default function Write() {
         } catch (err) {
             setError(true);
         }
+        setDisable(false);
     };
 
     return (
@@ -83,7 +86,7 @@ export default function Write() {
                         onChange={(e) => setDesc(e.target.value)} >
                     </textarea>
                 </div>
-                <button className="writeSubmit" type='submit'>Publish</button>
+                <button className="writeSubmit" type='submit' disabled={disable}>Publish</button>
             </form>
         </div>
     );

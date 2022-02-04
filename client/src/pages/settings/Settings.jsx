@@ -14,11 +14,13 @@ export default function Settings() {
     const [file, setFile] = useState(null);
     const [password, setPassword] = useState(false);
     const [success, setSuccess] = useState(false);
+    const [disable, setDisable] = useState(false);
 
-    const folder = "http://localhost:5000/images/";
+    const folder =  `https://lh3.googleusercontent.com/d/`;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setDisable(true);
         dispatch({ 
             type: "UPDATE_START" 
         });
@@ -33,10 +35,10 @@ export default function Settings() {
             const filename = Date.now() + file.name;
             data.append("name", filename);
             data.append("file", file);
-            updatedUser.profilePic = filename;
 
             try {
-                await axios.post("/upload", data);
+                await axios.post("/upload", data, {headers: {authorization: "Bearer " + user.accessToken}})
+                .then((res) => (updatedUser.profilePic = res.data.fileId));
             } catch (err) {
                 
             }
@@ -55,6 +57,7 @@ export default function Settings() {
                 type: "UPDATE_FAILURE" 
             });
         }
+        setDisable(false);
     };
 
     return (
@@ -95,6 +98,7 @@ export default function Settings() {
                             (
                                 <img
                                     src={folder + user.profilePic}
+                                    referrerPolicy="no-referrer"
                                     alt=""
                                 />
                             )
@@ -137,7 +141,7 @@ export default function Settings() {
                         required
                     />
 
-                    <button className="settingsSubmit" type="submit">
+                    <button className="settingsSubmit" type="submit" disabled={disable}>
                         Update
                     </button>
                     {success && (

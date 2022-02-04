@@ -6,8 +6,9 @@ import { Context } from '../../context/Context';
 
 export default function Single() {
 
-    const folder = "http://localhost:5000/images/";
+    const folder =  `https://lh3.googleusercontent.com/d/`
 
+    
     const location = useLocation();
     const path = location.pathname.split("/")[2];
 
@@ -23,6 +24,7 @@ export default function Single() {
 
     const [uploadError, setUploadError] = useState(false);
     const [error, setError] = useState(false);
+    const [disable, setDisable] = useState(false);
 
     useEffect(() => {
         const getPost = async () => {
@@ -49,6 +51,7 @@ export default function Single() {
 
     const handleUpdate = async (e) => {
         e.preventDefault();
+        setDisable(true);
         const newPost = {
             username: user.username,
             title,
@@ -62,7 +65,8 @@ export default function Single() {
             newPost.photo = filename;
 
             try {
-                await axios.post("/upload", data);
+                await axios.post("/upload", data, {headers: {authorization: "Bearer " + user.accessToken}})
+                .then((res) => (newPost.photo = res.data.fileId));
             } catch (err) {
                 setUploadError(true);
             }
@@ -76,6 +80,7 @@ export default function Single() {
         } catch (err) {
             setError(true);
         }
+        setDisable(false);
     };
 
     return (
@@ -87,6 +92,7 @@ export default function Single() {
                         <img
                             className="singlePostImg"
                             src={folder + post.photo}
+                            referrerPolicy="no-referrer"
                             alt=""
                         />
                     ) : (
@@ -167,7 +173,7 @@ export default function Single() {
                                     onChange={(e) => setDesc(e.target.value)} >
                                 </textarea>
                             </div>
-                            <button className="writeSubmit" type='submit'>Update</button>
+                            <button className="writeSubmit" type='submit' disabled={disable}>Update</button>
                         </form>
                     )
                 }

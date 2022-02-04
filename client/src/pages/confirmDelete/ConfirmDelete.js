@@ -10,10 +10,9 @@ export default function ConfirmDelete() {
     console.log("User id ", user.accessToken);
     const handleDelete = async () => {
         try {
-            await axios.delete("/users/" + user._id, {
-                headers: {authorization: "Bearer " + user.accessToken},
-                data: {userId: user._id}
-            });
+            await axios.delete("/users/" + user._id,
+                {headers: {authorization: "Bearer " + user.accessToken}},
+            );
             dispatch({
                 type:"LOGOUT",
             });

@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const Post = require("../models/Post");
 const verify = require("../middleware/verify");
+const { auth, moveFile } = require("../middleware/drive");
 
 // CREATE POST
 router.post("/", verify, async (req, res) => {
@@ -18,6 +19,12 @@ router.post("/", verify, async (req, res) => {
 router.put("/:id", verify, async (req, res) => {
     try {
         const post = await Post.findById(req.params.id);
+
+        if (req.body.photo) {
+            const picId = post.photo;
+            await moveFile(picId, auth);
+        }
+
         if(post.username === req.body.username) {
             try {
                 const updatedpost = await Post.findByIdAndUpdate(req.params.id, {
@@ -42,6 +49,10 @@ router.put("/:id", verify, async (req, res) => {
 router.delete("/:id", verify, async (req, res) => {
     try {
         const post = await Post.findById(req.params.id);
+
+        const picId = post.photo;
+        await moveFile(picId, auth);
+
         if(post.username === req.body.username) {
             try {
                 await post.delete();
