@@ -48,7 +48,7 @@ export default function Settings() {
             setSuccess(true);
             dispatch({ 
                 type: "UPDATE_SUCCESS", 
-                payload: res.data 
+                payload: {...res.data, accessToken: user.accessToken}
             });
         } catch (err) {
             dispatch({ 
