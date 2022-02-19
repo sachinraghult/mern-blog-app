@@ -1,18 +1,6 @@
 # `Deployed blog-application`
 https://unofficial-blog.herokuapp.com/
 
-## `Overview`
-
-## Home page
-![image](https://user-images.githubusercontent.com/69163882/153203949-e286427e-a528-4012-b89a-d1a0b585694b.png)
-
-## Blog
-![image](https://user-images.githubusercontent.com/69163882/153204110-b3913be1-0f4f-4486-b096-5f35cb78ade8.png)
-
-## Post
-![image](https://user-images.githubusercontent.com/69163882/153204679-58fe1a36-8e08-47bd-aefb-ae556856c61a.png)
-And many more...
-
 
 ## Getting Started with Create React App
 
